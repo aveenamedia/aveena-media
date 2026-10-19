@@ -1,0 +1,184 @@
+index.html 
+<!DOCTYPE html>
+<html lang="so">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aveena Media</title>
+  <meta name="description" content="Aveena Media — filimo iyo taxane Af-Soomaali ah.">
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #101014;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    header {
+      padding: 22px 16px;
+      background: #191920;
+      border-bottom: 1px solid #34343d;
+    }
+    .brand { font-size: 27px; font-weight: bold; color: #c4a3ff; }
+    header p { color: #bbb; margin-bottom: 0; }
+    main { padding: 18px 14px; max-width: 1000px; margin: auto; }
+    input, select {
+      width: 100%; padding: 13px; margin: 8px 0;
+      border-radius: 9px; border: 1px solid #444;
+      background: #202027; color: white;
+    }
+    h2 { font-size: 20px; margin-top: 26px; }
+    .hero {
+      background: linear-gradient(135deg, #30214b, #17171e);
+      padding: 24px 18px; border-radius: 14px;
+    }
+    .hero p, .muted { color: #c5c5ce; line-height: 1.6; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .movie {
+      background: #1e1e26; padding: 14px;
+      border-radius: 12px; border: 1px solid #33333d;
+    }
+    .poster {
+      height: 100px; border-radius: 8px;
+      background: linear-gradient(135deg, #47315e, #252538);
+      display: grid; place-items: center;
+      font-size: 32px;
+    }
+    .movie h3 { font-size: 16px; }
+    button, .telegram {
+      background: #a77bff; color: #15121d;
+      border: 0; border-radius: 8px; padding: 11px;
+      font-weight: bold; cursor: pointer;
+      text-decoration: none; display: inline-block;
+    }
+    video { width: 100%; border-radius: 10px; background: black; }
+    .player { display: none; margin-top: 20px; }
+    footer { padding: 25px 15px; text-align: center; color: #aaa; }
+    @media (min-width: 650px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">AVEENA MEDIA</div>
+    <p>Madadaalo Af-Soomaali ah</p>
+  </header>
+
+  <main>
+    <section class="hero">
+      <h1>Ku soo dhowow Aveena Media</h1>
+      <p>Ka hel filimada, anime-ga iyo taxanayaasha aad jeceshahay.</p>
+      <a class="telegram" href="https://t.me/aveena_media">
+        Booqo Telegram-ka
+      </a>
+    </section>
+
+    <h2>Raadi filim</h2>
+    <input id="search" type="search"
+      placeholder="Geli magaca filimka..."
+      aria-label="Raadi filim">
+
+    <select id="category" aria-label="Dooro qaybta">
+      <option value="Dhammaan">Dhammaan qaybaha</option>
+      <option value="K-drama">K-drama</option>
+      <option value="Anime">Anime</option>
+      <option value="Cartoon">Cartoon</option>
+    </select>
+
+    <h2>Filimada la heli karo</h2>
+    <section class="grid" id="movies"></section>
+
+    <section class="player" id="player">
+      <h2 id="videoTitle">Daawo muuqaalka</h2>
+      <video id="video" controls playsinline
+        preload="metadata"></video>
+      <p class="muted">
+        Muuqaalkan waa tijaabo. Ku beddel fiidiyow aad
+        xaq u leedahay inaad baahiso.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Aveena Media — Xuquuqda way dhowran tahay.
+  </footer>
+
+  <script>
+    const movies = [
+      {
+        title: "Muuqaal Tijaabo ah",
+        category: "K-drama",
+        video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+      },
+      {
+        title: "Anime Tijaabo",
+        category: "Anime",
+        video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+      },
+      {
+        title: "Cartoon Tijaabo",
+        category: "Cartoon",
+        video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
+      }
+    ];
+
+    const grid = document.getElementById("movies");
+    const search = document.getElementById("search");
+    const category = document.getElementById("category");
+
+    function render() {
+      const q = search.value.toLowerCase().trim();
+      const cat = category.value;
+      const filtered = movies.filter(m =>
+        m.title.toLowerCase().includes(q) &&
+        (cat === "Dhammaan" || m.category === cat)
+      );
+
+      grid.innerHTML = "";
+
+      filtered.forEach(m => {
+        const card = document.createElement("article");
+        card.className = "movie";
+
+        const poster = document.createElement("div");
+        poster.className = "poster";
+        poster.textContent = "▶";
+
+        const title = document.createElement("h3");
+        title.textContent = m.title;
+
+        const label = document.createElement("p");
+        label.className = "muted";
+        label.textContent = m.category;
+
+        const btn = document.createElement("button");
+        btn.textContent = "Daawo";
+        btn.addEventListener("click", () => {
+          const player = document.getElementById("player");
+          const video = document.getElementById("video");
+          document.getElementById("videoTitle").textContent = m.title;
+          video.src = m.video;
+          player.style.display = "block";
+          player.scrollIntoView({ behavior: "smooth" });
+        });
+
+        card.append(poster, title, label, btn);
+        grid.appendChild(card);
+      });
+
+      if (!filtered.length) {
+        grid.textContent = "Wax filim ah lama helin.";
+      }
+    }
+
+    search.addEventListener("input", render);
+    category.addEventListener("change", render);
+    render();
+  </script>
+</body>
+</html>
